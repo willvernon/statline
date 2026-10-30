@@ -12,13 +12,13 @@ def main(season: int | None = None) -> None:
         table = "lake.raw.nfl_rosters"
         table_name = "rosters"
 
-        lake_cols = {row[0] for row in conn.sql(f"DESCRIBE {table}").fetchall()}
+        lake_cols = {row[0] for row in conn.execute(f"DESCRIBE {table}").fetchall()}
         source_cols = set(rosters.columns)
         new_cols = set(source_cols - lake_cols)
         if new_cols:
             source_types = {
                 name: typ
-                for name, typ, *_ in conn.sql(f"DESCRIBE {table_name}").fetchall()
+                for name, typ, *_ in conn.execute(f"DESCRIBE {table_name}").fetchall()
             }
             for col in new_cols:
                 print(f"new cols: adding {col}")
@@ -34,7 +34,7 @@ def main(season: int | None = None) -> None:
         """
         )
 
-        result = conn.sql(
+        result = conn.execute(
             f"SELECT COUNT(*) FROM {table} WHERE season = {season}"
         ).fetchone()
         if result is None:

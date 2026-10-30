@@ -10,12 +10,12 @@ def main() -> None:
         conn.register("players", players)
         table = "lake.raw.nfl_players"
 
-        lake_cols = {row[0] for row in conn.sql(f"DESCRIBE {table}").fetchall()}
+        lake_cols = {row[0] for row in conn.execute(f"DESCRIBE {table}").fetchall()}
         source_cols = set(players.columns)
         new_cols = set(source_cols - lake_cols)
         if new_cols:
             source_types = {
-                name: typ for name, typ, *_ in conn.sql("DESCRIBE players").fetchall()
+                name: typ for name, typ, *_ in conn.execute("DESCRIBE players").fetchall()
             }
             for col in new_cols:
                 print(f"new cols: adding {col}")
@@ -31,7 +31,7 @@ def main() -> None:
         """
         )
 
-        result = conn.sql(f"SELECT COUNT(*) FROM {table}").fetchone()
+        result = conn.execute(f"SELECT COUNT(*) FROM {table}").fetchone()
         if result is None:
             raise RuntimeError("COUNT(*) returned no rows")
         print(f"Loaded {result[0]} rows into {table}")
