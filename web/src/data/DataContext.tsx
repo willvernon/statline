@@ -3,7 +3,17 @@ import type { Dataset } from './contract.ts'
 import { buildModel, pool, type Model, type Pool, type Window } from './derive.ts'
 import type { Position } from './contract.ts'
 
-const BASE = (import.meta.env.VITE_DATA_BASE as string | undefined)?.replace(/\/$/, '') ?? '/data/mock'
+// Bun inlines PUBLIC_DATA_BASE at bundle time (bunfig.toml / bun build --env).
+// When the variable is unset the reference is left as-is, and the browser has
+// no `process`, so the throw means "use the default".
+function dataBase(): string | undefined {
+  try {
+    return process.env.PUBLIC_DATA_BASE
+  } catch {
+    return undefined
+  }
+}
+const BASE = (dataBase() || '/data/mock').replace(/\/$/, '')
 
 async function load(): Promise<Dataset> {
   const get = async <T,>(name: string): Promise<T> => {
@@ -59,7 +69,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
       <div className="boot">
         <p className="boot-title">Couldn't load data</p>
         <p className="mono">{state.error}</p>
-        <p className="muted">Looking in <code>{BASE}</code>. Set <code>VITE_DATA_BASE</code> to the folder with the exported JSON.</p>
+        <p className="muted">Looking in <code>{BASE}</code>. Set <code>PUBLIC_DATA_BASE</code> to the folder with the exported JSON.</p>
       </div>
     )
   }

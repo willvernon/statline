@@ -1,0 +1,4 @@
+# Inline PUBLIC_* env vars into the browser bundle in the dev server.
+# `bun run build` passes the same prefix with --env.
+[serve.static]
+env = "PUBLIC_*"

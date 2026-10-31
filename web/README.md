@@ -1,18 +1,21 @@
 # Statline web
 
-Mobile-first frontend for the fantasy marts. Vite + React + TypeScript. The charts are hand-rolled SVG with no chart library. The app reads six static JSON files and does no other I/O.
+Mobile-first frontend for the fantasy marts. React + TypeScript on Bun, which installs packages, runs the dev server and bundles the build. The charts are hand-rolled SVG with no chart library. The app reads six static JSON files and does no other I/O.
 
 ```bash
 cd web
-npm install
-npm run dev          # http://localhost:5173, mock data
-npm run build        # typecheck + production bundle in dist/
-npm run fixtures     # regenerate public/data/mock (seeded, stable)
+bun install
+bun run dev          # http://localhost:5173, hot reload, mock data
+bun run build        # typecheck + production bundle in dist/
+bun run preview      # serve dist/ locally
+bun run fixtures     # regenerate public/data/mock (seeded, stable)
 ```
+
+`server.ts` is the local server for both `dev` and `preview`. It serves `public/data` and `public/fonts` from disk and falls back to `index.html` for client routes. Set `PORT` to change the port.
 
 ## Wiring real data
 
-Set `VITE_DATA_BASE` (see `.env.example`) to a folder or URL that holds these files. Each file is a JSON array of row objects, except `meta.json`. The field-level contract is `src/data/contract.ts`.
+Set `PUBLIC_DATA_BASE` (see `.env.example`) to a folder or URL that holds these files. Bun inlines `PUBLIC_*` variables into the browser bundle at build time (`bunfig.toml` for dev, `--env` in the build script), so restart `dev` or rebuild after changing it. Each file is a JSON array of row objects, except `meta.json`. The field-level contract is `src/data/contract.ts`.
 
 | File | Grain | Source in the plan |
 | --- | --- | --- |
@@ -33,7 +36,7 @@ What the UI assumes:
 - Optional fields (`epa_*`, `dropbacks`, `ngs_*`, team `off_*`/`def_*`) come from play-by-play and Next Gen Stats, which aren't loaded yet. `meta.sources.pbp` / `meta.sources.ngs` say which sources are loaded. Charts that need a missing source show "Not available yet" and the rest still work. Ship `{ "pbp": false, "ngs": false }` until those loaders exist.
 - Once play-by-play is loaded, coalesce EPA fields to 0 in dbt. NGS is the exception: nflverse skips low-volume player-weeks, so null NGS rows are normal. The UI sums separation over the weeks NGS covers.
 - Separation is stored as `ngs_separation_x_targets` (avg separation × NGS targets) so that it sums. `meta.separation_fit` holds the intercept and slope from the dbt fit across qualified WRs and TEs. The UI never refits.
-- Routes use the History API. Whatever serves `dist/` needs an `index.html` fallback for unknown paths, or deep links like `/player/…` will 404. `vite dev` and `vite preview` handle this already.
+- Routes use the History API. Whatever serves `dist/` needs an `index.html` fallback for unknown paths, or deep links like `/player/…` will 404. `bun run dev` and `bun run preview` handle this already.
 
 ## Screens
 
