@@ -1,17 +1,13 @@
-with
-    team_game as (
-        select
-            *
-        from
-            {{ref ('stg_nfl_team_stats')}}
-    )
 select
-    -- keys / context
+    -- keys / context (player_id maps to gsis_id on dim_player in marts)
+    player_id,
+    position,
+    position_group,
     season,
     week,
-    team_abbr,
     season_type,
     game_id,
+    team_abbr,
     opponent_team_abbr,
     -- passing
     completions,
@@ -29,6 +25,7 @@ select
     passing_epa,
     passing_cpoe,
     passing_2pt_conversions,
+    pacr,
     passing_10,
     passing_16,
     passing_20,
@@ -62,6 +59,10 @@ select
     receiving_16,
     receiving_20,
     receiving_40,
+    racr,
+    target_share,
+    air_yards_share,
+    wopr,
     -- special teams TDs
     special_teams_tds,
     -- defense
@@ -89,7 +90,6 @@ select
     fumble_recovery_tds,
     penalties,
     penalty_yards,
-    timeouts,
     fumbles_forced_by_opp,
     fumbles_not_forced,
     fumbles_out_of_bounds,
@@ -149,6 +149,9 @@ select
     pt_returned,
     pt_return_yards,
     pt_return_tds,
-    pt_net_yards
+    pt_net_yards,
+    -- fantasy
+    fantasy_points,
+    fantasy_points_ppr
 from
-    team_game
+    {{ref ('stg_nfl_player_stats')}}
