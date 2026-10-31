@@ -47,6 +47,11 @@ export interface Team {
   name: string
   /** Primary color, hex, for team dots on the teams chart. */
   color: string
+  /**
+   * Logo URL (e.g. nflverse team_logo_espn, ideally downloaded and self-hosted).
+   * Optional: without it the app uses /logos/{team}.svg.
+   */
+  logo?: string | null
 }
 
 /** players.json — one row per player_id (dim_player), as of thru_week. */

@@ -50,7 +50,7 @@ export function ShareCard() {
           </div>
           <div className="share-right card">
             <h2 className="display">{CHARTS[player.position][0]!.title}</h2>
-            <ChartCard chart={CHARTS[player.position][0]!} pool={p} highlights={[{ agg, color: ACCENT }]} bare />
+            <ChartCard chart={CHARTS[player.position][0]!} pool={p} highlights={[{ agg, color: ACCENT }]} bare noModeToggle />
           </div>
         </div>
       </div>

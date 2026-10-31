@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router'
 import { QuadrantScatter, type ScatterMark, type ScatterPoint } from '../charts/QuadrantScatter.tsx'
 import { quadrantOf, type ChartDef } from '../data/charts.ts'
 import { useData } from '../data/DataContext.tsx'
-import { METRICS, mean, ordinal, rankOf, shortName, type Agg, type Model, type Pool } from '../data/derive.ts'
+import { logoFor, METRICS, mean, ordinal, rankOf, shortName, type Agg, type Model, type Pool } from '../data/derive.ts'
 import { Icon } from './Icon.tsx'
 
 export const ACCENT = '#C2410C'
@@ -30,7 +30,10 @@ export function chartData(chart: ChartDef, pool: Pool, model: Model, highlights:
   for (const a of pool.qualified) {
     const x = mx.get(a, model)
     const y = my.get(a, model)
-    if (x != null && y != null) points.push({ id: a.player.player_id, x, y, name: a.player.name })
+    if (x != null && y != null) {
+      const { player_id, name, team, position } = a.player
+      points.push({ id: player_id, x, y, name, sub: `${position} · ${team}`, logo: logoFor(model, team) })
+    }
   }
   const marks: ScatterMark[] = []
   for (const h of highlights) {
@@ -39,7 +42,7 @@ export function chartData(chart: ChartDef, pool: Pool, model: Model, highlights:
     if (x == null || y == null) continue
     const hollow = !h.agg.qualified
     marks.push({
-      id: h.agg.player.player_id, x, y, color: h.color, shape: h.shape, hollow,
+      id: h.agg.player.player_id, x, y, color: h.color, shape: h.shape, hollow, logo: logoFor(model, h.agg.player.team),
       label: `${shortName(h.agg.player.name)}${hollow ? ' · small sample' : ''}`,
     })
   }
@@ -84,9 +87,11 @@ interface Props {
   footer?: ReactNode
   onPick?: (id: string) => void
   bare?: boolean
+  /** Hide the Logos / Dots switch (share card). */
+  noModeToggle?: boolean
 }
 
-export function ChartCard({ chart, pool, highlights, sub, verdictFor, footer, onPick, bare }: Props) {
+export function ChartCard({ chart, pool, highlights, sub, verdictFor, footer, onPick, bare, noModeToggle }: Props) {
   const { model } = useData()
   const [, setParams] = useSearchParams()
   const data = chartData(chart, pool, model, highlights)
@@ -115,6 +120,7 @@ export function ChartCard({ chart, pool, highlights, sub, verdictFor, footer, on
       xTick={tickFormat(chart.x)}
       yTick={tickFormat(chart.y)}
       onPick={onPick}
+      modeToggle={!noModeToggle}
       ariaLabel={`${chart.title}: ${data.points.length} ${pool.position}s, ${mx.phrase} across, ${my.phrase} up.${v ? ` ${v.head}. ${v.body}` : ''}`}
     />
   )

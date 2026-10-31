@@ -9,6 +9,7 @@ bun run dev          # http://localhost:5173, hot reload, mock data
 bun run build        # typecheck + production bundle in dist/
 bun run preview      # serve dist/ locally
 bun run fixtures     # regenerate public/data/mock (seeded, stable)
+bun run logos        # regenerate the placeholder team badges in public/logos
 ```
 
 `server.ts` is the local server for both `dev` and `preview`. It serves `public/data` and `public/fonts` from disk and falls back to `index.html` for client routes. Set `PORT` to change the port.
@@ -37,6 +38,10 @@ What the UI assumes:
 - Once play-by-play is loaded, coalesce EPA fields to 0 in dbt. NGS is the exception: nflverse skips low-volume player-weeks, so null NGS rows are normal. The UI sums separation over the weeks NGS covers.
 - Separation is stored as `ngs_separation_x_targets` (avg separation × NGS targets) so that it sums. `meta.separation_fit` holds the intercept and slope from the dbt fit across qualified WRs and TEs. The UI never refits.
 - Routes use the History API. Whatever serves `dist/` needs an `index.html` fallback for unknown paths, or deep links like `/player/…` will 404. `bun run dev` and `bun run preview` handle this already.
+
+## Team logos
+
+Scatter points show the player's team logo by default, with a Logos / Dots switch on every chart (remembered per browser). The logo for a team is `teams.json` `logo` if set, otherwise `/logos/{team_abbr}.svg`. The files in `public/logos` are placeholder badges (abbreviation on team color) made by `bun run logos`. To use real logos, either set `logo` per team (e.g. from nflverse `team_logo_espn`) or drop files with the same names into `public/logos`. Prefer downloading and self-hosting over linking to another site's CDN. NFL logos are trademarks; that's a call for whoever publishes the site.
 
 ## Screens
 

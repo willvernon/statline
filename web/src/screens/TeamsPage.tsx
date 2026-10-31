@@ -4,7 +4,7 @@ import { TeamScatter, teamEpa } from '../components/PlayerParts.tsx'
 import { DESKTOP, useMedia } from '../components/useMedia.ts'
 import type { Position } from '../data/contract.ts'
 import { useData } from '../data/DataContext.tsx'
-import { METRICS } from '../data/derive.ts'
+import { logoFor, METRICS } from '../data/derive.ts'
 
 type Sort = 'off' | 'def' | Position
 
@@ -61,7 +61,7 @@ export function TeamsPage() {
                 {rows.map((r) => (
                   <tr key={r.team.team}>
                     <td className="l">
-                      <span className="team-chip mono"><i style={{ background: r.team.color }} />{r.team.team}</span>
+                      <span className="team-inline mono strong"><img src={logoFor(model, r.team.team)} alt="" />{r.team.team}</span>
                     </td>
                     <td className="mono">{r.off == null ? '—' : signed(r.off)}</td>
                     <td className="mono">{r.def == null ? '—' : signed(r.def)}</td>

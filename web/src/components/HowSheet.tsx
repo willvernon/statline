@@ -87,7 +87,7 @@ export function HowSheet({ position, example }: { position?: Position; example?:
                   <p>{q.per_team_game}+ {q.stat} per team game. {plotted} {pos}s this week.</p>
                 </div>
                 <div className="legend-card">
-                  <div className="eyebrow mono"><span className="dot-key hollow" /> Hollow</div>
+                  <div className="eyebrow mono"><span className="dot-key hollow" /> Small sample</div>
                   <p>Below the line. Shown when selected, left out of averages and the fit.</p>
                 </div>
               </div>

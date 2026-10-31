@@ -9,7 +9,7 @@ import { DESKTOP, useMedia } from '../components/useMedia.ts'
 import { CHARTS, quadrantOf } from '../data/charts.ts'
 import type { Position } from '../data/contract.ts'
 import { useData } from '../data/DataContext.tsx'
-import { METRICS, POSITION_NAMES } from '../data/derive.ts'
+import { logoFor, METRICS, POSITION_NAMES } from '../data/derive.ts'
 import { playerPath } from '../paths.ts'
 import { NotFound } from './NotFound.tsx'
 
@@ -103,7 +103,7 @@ function ExplorerFor({ position }: { position: Position }) {
                     <td className="radio"><span className={on ? 'radio-on' : 'radio-off'} /></td>
                     <td className="l">
                       <div className="board-name">{a.player.name}</div>
-                      <div className="mono small muted-2">{a.player.team}</div>
+                      <div className="mono small muted-2 team-inline"><img src={logoFor(model, a.player.team)} alt="" />{a.player.team}</div>
                     </td>
                     <td className="mono">{leadFirst[0]!.format(vals[0]!)}</td>
                     <td className="mono">{leadFirst[1]!.format(vals[1]!)}</td>

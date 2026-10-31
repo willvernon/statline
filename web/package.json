@@ -8,7 +8,8 @@
     "build": "tsc -b && rm -rf dist && bun build ./index.html --outdir dist --production --public-path / --env 'PUBLIC_*' && cp -R public/. dist/",
     "preview": "bun server.ts --prod",
     "typecheck": "tsc -b",
-    "fixtures": "bun scripts/make-fixtures.ts"
+    "fixtures": "bun scripts/make-fixtures.ts",
+    "logos": "bun scripts/make-logos.ts"
   },
   "dependencies": {
     "react": "^19.3.1",

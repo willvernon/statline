@@ -354,6 +354,11 @@ export const POSITION_NAMES: Record<Position, string> = {
   QB: 'Quarterbacks', RB: 'Running backs', WR: 'Wide receivers', TE: 'Tight ends',
 }
 
+/** Team logo URL: the data's own, else the bundled badge in public/logos. */
+export function logoFor(m: Model, team: string): string {
+  return m.teamsByAbbr.get(team)?.logo || `/logos/${team}.svg`
+}
+
 export function shortName(name: string): string {
   const parts = name.split(' ')
   if (parts.length < 2) return name

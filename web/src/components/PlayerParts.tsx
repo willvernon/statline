@@ -4,7 +4,7 @@ import { TILES } from '../data/charts.ts'
 import type { PlayerGame, Position, Team } from '../data/contract.ts'
 import { useData } from '../data/DataContext.tsx'
 import {
-  aggregateTeam, defenseRanks, formatKickoff, METRICS, nextGame, ordinal, rankOf, spreadText, teamWeeks,
+  aggregateTeam, defenseRanks, formatKickoff, logoFor, METRICS, nextGame, ordinal, rankOf, spreadText, teamWeeks,
   type Agg, type Matchup, type Model, type Pool,
 } from '../data/derive.ts'
 import { ACCENT, BLUE } from './ChartCard.tsx'
@@ -67,7 +67,7 @@ export function SmallSampleNote({ agg, model }: { agg: Agg; model: Model }) {
         <strong>Small sample</strong>
         <p>
           {agg.volume} {q.stat} in {agg.games} {agg.games === 1 ? 'game' : 'games'}. The line is {q.per_team_game} per team game
-          ({agg.line} so far). Plotted hollow and left out of the averages.
+          ({agg.line} so far). Marked as a small sample and left out of the averages.
         </p>
       </div>
     </div>
@@ -194,10 +194,10 @@ export function TeamScatter({ highlight, ariaLabel }: { highlight: { team: Team;
   const ids = new Set(highlight.map((h) => h.team.team))
   const points: ScatterPoint[] = rows
     .filter((r) => !ids.has(r.team.team))
-    .map((r) => ({ id: r.team.team, x: r.off!, y: r.def!, name: r.team.name, fill: r.team.color }))
+    .map((r) => ({ id: r.team.team, x: r.off!, y: r.def!, name: r.team.name, fill: r.team.color, logo: logoFor(model, r.team.team) }))
   const marks: ScatterMark[] = highlight.flatMap((h) => {
     const r = rows.find((x) => x.team.team === h.team.team)
-    return r ? [{ id: h.team.team, x: r.off!, y: r.def!, label: h.team.team, color: h.color, shape: h.shape }] : []
+    return r ? [{ id: h.team.team, x: r.off!, y: r.def!, label: h.team.team, color: h.color, shape: h.shape, logo: logoFor(model, h.team.team) }] : []
   })
   if (!model.data.meta.sources.pbp) {
     return (

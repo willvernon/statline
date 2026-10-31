@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link, useParams } from 'react-router'
+import { useMarkStyle } from '../charts/markStyle.ts'
 import { ACCENT, ChartCard } from '../components/ChartCard.tsx'
 import { Icon } from '../components/Icon.tsx'
 import { GameLog, MatchupCard, MatchupChartCard, RoleTrendCard, SmallSampleNote, StatTiles, WeeklyPprCard } from '../components/PlayerParts.tsx'
@@ -18,6 +19,7 @@ export function PlayerPage() {
   const desktop = useMedia(DESKTOP)
   const [win, setWin] = useState<Window>('season')
   const { share, toast } = useShare()
+  const marks = useMarkStyle()
   const player = model.playersById.get(id)
   if (!player) return <NotFound what="player" />
 
@@ -60,7 +62,7 @@ export function PlayerPage() {
       pool={chartPool}
       highlights={highlight}
       verdictFor={chartAgg}
-      sub={small && i === 0 ? 'Hollow dot: not enough volume to qualify yet.' : subFor(i)}
+      sub={small && i === 0 ? `${marks === 'logos' ? 'Dashed ring' : 'Hollow dot'}: not enough volume to qualify yet.` : subFor(i)}
     />
   ))
 
