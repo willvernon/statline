@@ -168,3 +168,20 @@ Rosters and draft picks stay in silver.
 - Python dependencies come from uv (`uv sync`, `uv run`).
 - Feature branches and pull requests, including solo work. `main` stays merge-only.
 - Do not commit `.env`, `lake/`, `*.duckdb`, dbt `target/`, `.dagster_home/`, or `.prefect/`.
+
+## Troubleshooting
+
+`Failed to spawn: prefect` (or `dbt`) after moving the repo. The scripts in `.venv/bin` keep the old absolute path to Python. Rebuild them.
+
+```bash
+uv sync --reinstall
+```
+
+`401 Unauthorized` from `api.prefect.cloud` on `--serve`. The active Prefect profile points at Prefect Cloud. Profiles live in `~/.prefect/profiles.toml`, per user, not per repo. Point one at the local server.
+
+```bash
+uv run prefect profile create local
+uv run prefect profile use local
+uv run prefect config set PREFECT_API_URL=http://127.0.0.1:4200/api
+uv run prefect config view    # PREFECT_API_URL should be the local server
+```
