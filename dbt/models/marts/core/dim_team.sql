@@ -1,10 +1,3 @@
-with
-    team as (
-        select
-            *
-        from
-            {{ref ('stg_nfl_teams')}}
-    )
 select
     team_abbr, -- natty key
     team_id,
@@ -17,4 +10,4 @@ select
     team_logo_espn,
     team_wordmark
 from
-    team
+    {{ref ('stg_nfl_teams')}}

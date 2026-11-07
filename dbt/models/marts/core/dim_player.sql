@@ -1,10 +1,3 @@
-with
-    player as (
-        select
-            *
-        from
-            {{ref ('stg_nfl_players')}}
-    )
 select
     -- natty key
     gsis_id,
@@ -29,4 +22,4 @@ select
     status,
     years_of_experience
 from
-    player
+    {{ref ('stg_nfl_players')}}

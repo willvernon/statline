@@ -1,11 +1,4 @@
--- Grain: 1 row per game
-with
-    games as (
-        select
-            *
-        from
-            {{ref ('stg_nfl_schedules')}}
-    )
+-- Grain: 1 row per game FROM {{ref ('stg_nfl_schedules')}}
 select
     -- natty key
     game_id,
@@ -44,4 +37,4 @@ select
     under_odds,
     over_odds,
 from
-    games
+    {{ref ('stg_nfl_schedules')}}
