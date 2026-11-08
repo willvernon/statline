@@ -1,5 +1,7 @@
 import sys
 
+import sentry_sdk
+
 from ingestion.load.load_raw_nfl_draft_picks import main as load_draft_picks
 from ingestion.load.load_raw_nfl_player_stats import main as load_player_stats
 from ingestion.load.load_raw_nfl_players import main as load_players
@@ -7,6 +9,7 @@ from ingestion.load.load_raw_nfl_rosters import main as load_rosters
 from ingestion.load.load_raw_nfl_schedules import main as load_schedules
 from ingestion.load.load_raw_nfl_team_stats import main as load_team_stats
 from ingestion.load.load_raw_nfl_teams import main as load_teams
+from orchestration.resources.sentry import init_sentry
 
 
 def _run(load, *args) -> str | None:
@@ -19,6 +22,8 @@ def _run(load, *args) -> str | None:
     try:
         load(*args)
     except Exception as exc:  # noqa: BLE001
+        # Swallowed so later loaders still run, so report it explicitly.
+        sentry_sdk.capture_exception(exc)
         print(f"FAILED {name}: {exc}")
         return name
     print(f"OK {name}")
@@ -59,5 +64,6 @@ def main(season: int | None = None) -> None:
 
 
 if __name__ == "__main__":
+    init_sentry("loaders")
     season_arg = int(sys.argv[1]) if len(sys.argv) > 1 else None
     main(season_arg)
