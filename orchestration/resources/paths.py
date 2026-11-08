@@ -5,7 +5,7 @@ when that process is not started from the repo root.
 
 DuckLake also stores DATA_PATH as a string in the catalog (this project uses
 ``lake/data/``). Absolute DATA_PATH requires OVERRIDE_DATA_PATH on attach —
-see ``statline_dbt/profiles.yml`` and ``ingestion/ducklake.py``.
+see ``dbt/profiles.yml`` and ``ingestion/ducklake.py``.
 """
 
 from __future__ import annotations

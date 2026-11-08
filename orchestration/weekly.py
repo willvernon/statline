@@ -41,7 +41,7 @@ from orchestration.resources.sentry import init_sentry
 # report too.
 init_sentry("pipeline")
 
-DBT_PROJECT_DIR = REPO_ROOT / "statline_dbt"
+DBT_PROJECT_DIR = REPO_ROOT / "dbt"
 WEEKLY_CRON = "0 8 * * 2"
 WEEKLY_TIMEZONE = "America/Indiana/Indianapolis"
 USAGE = "usage: python -m orchestration.weekly [--serve | SEASON]"
