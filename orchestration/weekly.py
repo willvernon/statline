@@ -23,6 +23,7 @@ import sys
 os.environ['PREFECT_SERVER_ANALYTICS_ENABLED'] = 'false'
 os.environ['DO_NOT_TRACK'] = '1'
 
+import sentry_sdk
 from prefect import flow, task
 from prefect.schedules import Cron
 
@@ -34,6 +35,11 @@ from ingestion.load.load_raw_nfl_schedules import main as schedules_main
 from ingestion.load.load_raw_nfl_team_stats import main as team_stats_main
 from ingestion.load.load_raw_nfl_teams import main as teams_main
 from orchestration.resources.paths import REPO_ROOT, normalize_lake_env
+from orchestration.resources.sentry import init_sentry
+
+# Module level so served runs, which import this module in a fresh process,
+# report too.
+init_sentry('pipeline')
 
 DBT_PROJECT_DIR = REPO_ROOT / 'statline_dbt'
 WEEKLY_CRON = '0 8 * * 2'
@@ -106,15 +112,23 @@ def nfl_weekly_refresh(season: int | None = None) -> None:
     season. Teams and players are full snapshots and ignore ``season``.
     A failed loader stops the flow, so dbt does not build on partial bronze.
     """
-    normalize_lake_env()
-    load_teams()
-    load_players()
-    load_player_stats(season)
-    load_team_stats(season)
-    load_schedules(season)
-    load_rosters(season)
-    load_draft_picks(season)
-    dbt_build()
+    with sentry_sdk.start_transaction(op='prefect.flow', name='nfl_weekly_refresh'):
+        sentry_sdk.set_tag('season', season if season is not None else 'current')
+        try:
+            normalize_lake_env()
+            load_teams()
+            load_players()
+            load_player_stats(season)
+            load_team_stats(season)
+            load_schedules(season)
+            load_rosters(season)
+            load_draft_picks(season)
+            dbt_build()
+        except Exception:
+            # Prefect records the failure on the flow run instead of letting it
+            # reach sys.excepthook in served runs, so report it here.
+            sentry_sdk.capture_exception()
+            raise
 
 
 def serve_weekly() -> None:
