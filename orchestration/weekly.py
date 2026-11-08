@@ -20,8 +20,8 @@ import sys
 
 # Before Prefect is imported. The server heartbeat and the SDK analytics
 # client both start during import.
-os.environ['PREFECT_SERVER_ANALYTICS_ENABLED'] = 'false'
-os.environ['DO_NOT_TRACK'] = '1'
+os.environ["PREFECT_SERVER_ANALYTICS_ENABLED"] = "false"
+os.environ["DO_NOT_TRACK"] = "1"
 
 import sentry_sdk
 from prefect import flow, task
@@ -39,12 +39,12 @@ from orchestration.resources.sentry import init_sentry
 
 # Module level so served runs, which import this module in a fresh process,
 # report too.
-init_sentry('pipeline')
+init_sentry("pipeline")
 
-DBT_PROJECT_DIR = REPO_ROOT / 'statline_dbt'
-WEEKLY_CRON = '0 8 * * 2'
-WEEKLY_TIMEZONE = 'America/Indiana/Indianapolis'
-USAGE = 'usage: python -m orchestration.weekly [--serve | SEASON]'
+DBT_PROJECT_DIR = REPO_ROOT / "dbt"
+WEEKLY_CRON = "0 8 * * 2"
+WEEKLY_TIMEZONE = "America/Indiana/Indianapolis"
+USAGE = "usage: python -m orchestration.weekly [--serve | SEASON]"
 
 
 @task(log_prints=True)
@@ -86,16 +86,16 @@ def load_draft_picks(season: int | None = None) -> None:
 def dbt_build() -> None:
     """Run ``dbt build`` from the repo root with absolute lake paths."""
     normalize_lake_env()
-    dbt = shutil.which('dbt')
+    dbt = shutil.which("dbt")
     if dbt is None:
-        raise RuntimeError('dbt is not on PATH. Run this with `uv run`.')
+        raise RuntimeError("dbt is not on PATH. Run this with `uv run`.")
     subprocess.run(
         [
             dbt,
-            'build',
-            '--project-dir',
+            "build",
+            "--project-dir",
             str(DBT_PROJECT_DIR),
-            '--profiles-dir',
+            "--profiles-dir",
             str(DBT_PROJECT_DIR),
         ],
         cwd=REPO_ROOT,
@@ -104,7 +104,7 @@ def dbt_build() -> None:
     )
 
 
-@flow(name='nfl_weekly_refresh', log_prints=True)
+@flow(name="nfl_weekly_refresh", log_prints=True)
 def nfl_weekly_refresh(season: int | None = None) -> None:
     """Load one NFL season into ``lake.raw``, then build silver and gold.
 
@@ -112,8 +112,8 @@ def nfl_weekly_refresh(season: int | None = None) -> None:
     season. Teams and players are full snapshots and ignore ``season``.
     A failed loader stops the flow, so dbt does not build on partial bronze.
     """
-    with sentry_sdk.start_transaction(op='prefect.flow', name='nfl_weekly_refresh'):
-        sentry_sdk.set_tag('season', season if season is not None else 'current')
+    with sentry_sdk.start_transaction(op="prefect.flow", name="nfl_weekly_refresh"):
+        sentry_sdk.set_tag("season", season if season is not None else "current")
         try:
             normalize_lake_env()
             load_teams()
@@ -134,19 +134,19 @@ def nfl_weekly_refresh(season: int | None = None) -> None:
 def serve_weekly() -> None:
     """Listen for runs. The Tuesday 08:00 schedule starts paused."""
     nfl_weekly_refresh.serve(
-        name='nfl_weekly_refresh',
+        name="nfl_weekly_refresh",
         schedule=Cron(
             WEEKLY_CRON,
             timezone=WEEKLY_TIMEZONE,
             active=False,
-            slug='tuesday-8am',
+            slug="tuesday-8am",
         ),
     )
 
 
 def main(argv: list[str] | None = None) -> None:
     args = list(sys.argv[1:] if argv is None else argv)
-    if args == ['--serve']:
+    if args == ["--serve"]:
         serve_weekly()
         return
     if len(args) > 1:
@@ -160,5 +160,5 @@ def main(argv: list[str] | None = None) -> None:
     nfl_weekly_refresh(season)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

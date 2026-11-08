@@ -8,6 +8,8 @@ todo.md
 TODO.md
 todo/
 
+dbt/.user.yml
+
 lake/
 *.ducklake
 *.ducklake.wal
@@ -18,7 +20,6 @@ __pycache__/
 *.pyc
 target/
 dbt_packages/
-statline_dbt/.user.yml
 logs/
 .databricks/
 ingestion/manual-data/
