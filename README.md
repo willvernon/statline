@@ -59,7 +59,7 @@ Facts reference dims. Dims never reference each other. Rosters and draft picks s
 | --- | --- |
 | `ingestion/` | DuckLake connection + one loader per raw table |
 | `orchestration/` | `weekly.py` (the Prefect flow), path + Sentry setup |
-| `dbt/` | Staging, core marts, fantasy marts |
+| `dbt/` | Staging and core marts |
 | `scripts/` | `setup.py` (first run), `ingestion_runner.py` (all loaders) |
 | `cli/` | Go: export one gold mart to Parquet ([docs](docs/cli.md)) |
 | `docs/` | Setup, Prefect, multi-sport notes |

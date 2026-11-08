@@ -41,7 +41,7 @@ Add `READ_ONLY` inside the parentheses when you only want to look.
 | --- | --- | --- |
 | `raw` | `nfl_*` | source-shaped bronze; debugging loads |
 | `main_staging` | `stg_nfl_*` | clean, renamed; exploration |
-| `main_marts` | `dim_*`, `fact_*`, `mart_fantasy_*` | star schema; app and shared metrics |
+| `main_marts` | `dim_*`, `fact_*` | star schema; app and shared metrics |
 
 ```sql
 SHOW ALL TABLES;                          -- everything in the lake
