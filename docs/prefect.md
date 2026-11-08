@@ -1,5 +1,15 @@
 # Prefect
 
+## Start the UI
+
+| Step | Command (from the repo root) |
+| --- | --- |
+| 1. Terminal 1: server + UI | `uv run prefect server start` → open http://127.0.0.1:4200 |
+| 2. Terminal 2: run the flow | `uv run python -m orchestration.weekly` |
+| 3. See it | UI → **Runs** → the newest run → timeline + task runs |
+
+Close any DuckDB query session first. An open session locks the lake ([docs/query.md](query.md)).
+
 ## The flow
 
 ```mermaid
@@ -19,7 +29,7 @@ flowchart LR
 | Mode | Terminal 1 | Terminal 2 |
 | --- | --- | --- |
 | Run once | `uv run python -m orchestration.weekly` | — |
-| Run once, with UI history | `uv run prefect server start` | `uv run python -m orchestration.weekly` |
+| Run once, with UI history | `uv run prefect server start` | `uv run python -m orchestration.weekly` → see it at http://127.0.0.1:4200 under **Runs** |
 | Scheduled | `uv run prefect server start` | `uv run python -m orchestration.weekly --serve` |
 
 ## Schedule
@@ -48,3 +58,5 @@ uv run prefect config view   # check PREFECT_API_URL
 | --- | --- | --- |
 | `Failed to reach API at …:4200` | profile points at the local server, but it isn't running | start `uv run prefect server start` |
 | `401 Unauthorized` from `api.prefect.cloud` | active profile points at Prefect Cloud | the commands above |
+| UI loads but shows no runs or data | `PREFECT_SERVER_UI_API_URL` points somewhere else (e.g. a Tailscale address that isn't serving) | `uv run prefect config unset PREFECT_SERVER_UI_API_URL`, then restart the server |
+| Run fails at `dbt build` | flow can't find the dbt project | check `DBT_PROJECT_DIR` in `orchestration/weekly.py` matches the `dbt/` folder |

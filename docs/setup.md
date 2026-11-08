@@ -7,7 +7,14 @@
 | Python ≥ 3.13 | everything | managed by uv (`.python-version`) |
 | uv | everything | [install](https://docs.astral.sh/uv/getting-started/installation/) |
 | Go 1.27.1 | Parquet export CLI only | [download](https://go.dev/dl/) |
-| DuckDB CLI | ad-hoc queries only | [install](https://duckdb.org/install/) |
+| mise | DuckDB CLI pinned in `mise.toml`, for querying | [install](https://mise.jdx.dev/getting-started.html), then `mise install` in the repo |
+
+## After setup
+
+| Next | Doc |
+| --- | --- |
+| Run the weekly flow, open the Prefect UI | [docs/prefect.md](prefect.md) |
+| Attach the lake, open the DuckDB notebook, run queries | [docs/query.md](query.md) |
 
 ## What `scripts/setup.py` does
 

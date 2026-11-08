@@ -1,0 +1,4 @@
+# Tool versions for this repo. duckdb must match the Python duckdb in uv.lock,
+# or the CLI cannot open the lake catalog (docs/query.md#version-match).
+[tools]
+duckdb = "2.0.0"

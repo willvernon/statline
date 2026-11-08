@@ -4,7 +4,7 @@
 
 NFL box scores → DuckLake → dbt star schema, refreshed weekly by Prefect. Fully local.
 
-<!-- STAT-47: screenshot strip goes here — Prefect run + a gold query (docs/images/) -->
+![A completed nfl_weekly_refresh run in the Prefect UI: seven loaders, then dbt build](docs/images/prefect-run.png)
 
 ## How it flows
 
@@ -104,7 +104,7 @@ Profiles, the schedule, and failures: [docs/prefect.md](docs/prefect.md)
 | Load one past season | `uv run python -m orchestration.weekly 2024` |
 | Reload bronze only | `uv run python scripts/ingestion_runner.py 2024` |
 | Rebuild silver + gold only | `uv run dbt build --project-dir dbt --profiles-dir dbt` ¹ |
-| Query | DuckDB CLI or a notebook: `main_staging.stg_*`, `main_marts.*` |
+| Explore in a notebook | `duckdb -ui` with the lake attached → [docs/query.md](docs/query.md) |
 
 ¹ Export `LAKE_*` first: [docs/setup.md](docs/setup.md#environment)
 
@@ -114,5 +114,6 @@ Profiles, the schedule, and failures: [docs/prefect.md](docs/prefect.md)
 | --- | --- |
 | `Failed to reach API at http://127.0.0.1:4200` | Start `uv run prefect server start` first |
 | `401 Unauthorized` from `api.prefect.cloud` | Profile points at Prefect Cloud → [docs/prefect.md](docs/prefect.md#profiles) |
+| Prefect UI shows no runs | → [docs/prefect.md](docs/prefect.md#profiles) |
 | `Failed to spawn: prefect` after moving the repo | `uv sync --reinstall` |
 | dbt can't attach the lake | Run from the repo root with `LAKE_*` exported |
