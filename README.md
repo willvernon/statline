@@ -50,8 +50,10 @@ erDiagram
 | `dim_player` | one row per player | `gsis_id` |
 | `dim_team` | one row per team | `team_abbr` |
 | `dim_game` | one row per game | `game_id` |
+| `agg_player_season` | one row per player per season per season type | `player_id` + `season` + `season_type` |
+| `agg_team_season` | one row per team per season per season type | `team_abbr` + `season` + `season_type` |
 
-Facts reference dims. Dims never reference each other. Rosters and draft picks stay in silver.
+Facts reference dims. Dims never reference each other. Season aggregates roll up the facts: summed counts, recomputed rates. Rosters and draft picks stay in silver.
 
 ## Where things live
 
@@ -59,7 +61,7 @@ Facts reference dims. Dims never reference each other. Rosters and draft picks s
 | --- | --- |
 | `ingestion/` | DuckLake connection + one loader per raw table |
 | `orchestration/` | `weekly.py` (the Prefect flow), path + Sentry setup |
-| `dbt/` | Staging and core marts |
+| `dbt/` | Staging, core marts (`marts/core/`), season aggregates (`marts/agg/`) |
 | `scripts/` | `setup.py` (first run), `ingestion_runner.py` (all loaders) |
 | `cli/` | Go: export one gold mart to Parquet ([docs](docs/cli.md)) |
 | `docs/` | Setup, Prefect, multi-sport notes |

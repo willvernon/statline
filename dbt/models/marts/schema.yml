@@ -1,4 +1,26 @@
 models:
+  - name: agg_team_season
+    tests:
+      - unique:
+          column_name: "team_abbr || '|' || season || '|' || season_type"
+    columns:
+      - name: season
+        tests: [not_null]
+      - name: season_type
+        tests: [not_null]
+      - name: team_abbr
+        tests: [not_null]
+  - name: agg_player_season
+    tests:
+      - unique:
+          column_name: "player_id || '|' || season || '|' || season_type"
+    columns:
+      - name: player_id
+        tests: [not_null]
+      - name: season
+        tests: [not_null]
+      - name: season_type
+        tests: [not_null]
   - name: dim_game
     columns:
       - name: game_id

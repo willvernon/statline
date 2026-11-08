@@ -42,6 +42,7 @@ Add `READ_ONLY` inside the parentheses when you only want to look.
 | `raw` | `nfl_*` | source-shaped bronze; debugging loads |
 | `main_staging` | `stg_nfl_*` | clean, renamed; exploration |
 | `main_marts` | `dim_*`, `fact_*` | star schema; app and shared metrics |
+| `main_marts` | `agg_player_season`, `agg_team_season` | season totals; leaderboards without a `GROUP BY` |
 
 ```sql
 SHOW ALL TABLES;                          -- everything in the lake
@@ -65,6 +66,19 @@ WHERE f.season = 2024
 GROUP BY ALL
 ORDER BY ppr_points DESC
 LIMIT 10;
+```
+
+## Example: 2024 rushing leaders (season aggregate)
+
+Same idea, no `GROUP BY`: `agg_player_season` already holds season totals and rates.
+
+```sql
+SELECT p.display_name AS player, s.position, s.gp, s.rushing_yards, round(s.rush_ypc, 2) AS ypc
+FROM main_marts.agg_player_season AS s
+JOIN main_marts.dim_player        AS p ON p.gsis_id = s.player_id
+WHERE s.season = 2024 AND s.season_type = 'REG'
+ORDER BY s.rushing_yards DESC
+LIMIT 5;
 ```
 
 Load 2024 first: `uv run python -m orchestration.weekly 2024`. A fresh setup loads only the current season. Check what's loaded:
