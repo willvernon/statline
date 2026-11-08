@@ -17,8 +17,8 @@ from dotenv import load_dotenv
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
-_DEFAULT_CATALOG = 'lake/metadata.ducklake'
-_DEFAULT_DATA = 'lake/data'
+_DEFAULT_CATALOG = "lake/metadata.ducklake"
+_DEFAULT_DATA = "lake/data"
 
 
 def normalize_lake_env() -> Path:
@@ -31,11 +31,11 @@ def normalize_lake_env() -> Path:
 
     Returns REPO_ROOT.
     """
-    load_dotenv(REPO_ROOT / '.env')
+    load_dotenv(REPO_ROOT / ".env")
     root = REPO_ROOT.resolve()
 
-    catalog = Path(os.environ.get('LAKE_CATALOG_PATH', _DEFAULT_CATALOG))
-    data = Path(os.environ.get('LAKE_DATA_PATH', _DEFAULT_DATA))
+    catalog = Path(os.environ.get("LAKE_CATALOG_PATH", _DEFAULT_CATALOG))
+    data = Path(os.environ.get("LAKE_DATA_PATH", _DEFAULT_DATA))
 
     if not catalog.is_absolute():
         catalog = (root / catalog).resolve()
@@ -47,8 +47,8 @@ def normalize_lake_env() -> Path:
     else:
         data = data.resolve()
 
-    os.environ['LAKE_CATALOG_PATH'] = str(catalog)
-    os.environ['LAKE_DATA_PATH'] = str(data)
+    os.environ["LAKE_CATALOG_PATH"] = str(catalog)
+    os.environ["LAKE_DATA_PATH"] = str(data)
     return REPO_ROOT
 
 
