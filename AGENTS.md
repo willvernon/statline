@@ -31,7 +31,7 @@ of the portfolio story.
 | Extract | Python (`nflreadpy` primary; PFR planned secondary) |
 | Load | Python → DuckLake (`lake.raw`) |
 | Storage | DuckLake (SQL catalog + Parquet, fully local) |
-| Transform | dbt + `dbt-duckdb` (`statline_dbt/`) |
+| Transform | dbt + `dbt-duckdb` (`dbt/`) |
 | Orchestration | Prefect local (`orchestration/weekly.py`) |
 | Env | uv + `pyproject.toml` / `uv.lock` |
 
@@ -182,7 +182,7 @@ Target pattern for Python loaders (`ingestion/load/load_raw_nfl_*.py`):
 - **Ingestion:** `uv run python scripts/ingestion-runner.py` or individual
   `ingestion/load/load_raw_nfl_*.py`
 - **dbt:** from repo root —
-  `uv run dbt build --project-dir statline_dbt --profiles-dir statline_dbt`
+  `uv run dbt build --project-dir dbt --profiles-dir dbt`
   (`threads: 1` in `profiles.yml` — parallel materializations were flaky on local DuckLake)
 - **Orchestration:** `uv run python -m orchestration.weekly` from repo root (one shot).
   Clock: `uv run prefect server start`, then `uv run python -m orchestration.weekly --serve`.
@@ -225,7 +225,9 @@ Target pattern for Python loaders (`ingestion/load/load_raw_nfl_*.py`):
 | Loader season params / backfill UX | Next |
 | Live feeds / multi-sport | Later |
 
-- Linear: Portfolio project, parent epic `DARKO-86`, phase sub-issues in sequence
+- Linear: team `STAT` (Statline), project `P-STAT-49` core pipeline. Issues are `STAT-n`;
+  epics `STAT-46` (portfolio polish) and the review package `STAT-74`. The old `DARKO-86` epic
+  resolves but is retired — don't cite it
 - Repo: `github.com/willvernon/statline`
 - Scope first: historical NFL ~2000–2024; live in-season ingestion deferred
 

@@ -8,6 +8,8 @@ todo.md
 TODO.md
 todo/
 
+node_modules/
+
 dbt/.user.yml
 
 lake/

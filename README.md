@@ -35,7 +35,7 @@ ingestion/          DuckLake connect + raw loaders (load/, schemas/)
 orchestration/      weekly.py — nfl_weekly_refresh; resources/ normalizes lake paths
 scripts/            setup.py, ingestion_runner.py
 cli/                Go: COPY one gold mart to parquet
-statline_dbt/       dbt staging + marts
+dbt/                dbt staging + marts
 docs/               design notes
 lake/               local catalog + parquet (gitignored)
 notebooks/          exploration, not the pipeline
@@ -107,15 +107,15 @@ uv run python -m orchestration.weekly --serve
 
 The flow makes lake paths absolute before `dbt build`. `profiles.yml` sets `override_data_path`, so parquet stays under `lake/`.
 
-One season of bronze, then silver and gold. `dbt build` runs the `unique` and `not_null` key tests in `statline_dbt/models/*/schema.yml`. Export the lake paths first.
+One season of bronze, then silver and gold. `dbt build` runs the `unique` and `not_null` key tests in `dbt/models/*/schema.yml`. Export the lake paths first.
 
 ```bash
 uv run python -m ingestion.ducklake
 uv run python scripts/ingestion_runner.py            # current season
 uv run python scripts/ingestion_runner.py 2024       # one season
 uv run python ingestion/load/load_raw_nfl_teams.py   # one table; current season
-uv run dbt debug --project-dir statline_dbt --profiles-dir statline_dbt
-uv run dbt build --project-dir statline_dbt --profiles-dir statline_dbt
+uv run dbt debug --project-dir dbt --profiles-dir dbt
+uv run dbt build --project-dir dbt --profiles-dir dbt
 ```
 
 Individual loaders have no year flag.
@@ -164,7 +164,7 @@ Rosters and draft picks stay in silver.
 ## Limits
 
 - There is no 2000–2024 loop.
-- `statline_dbt/profiles.yml` sets `threads: 1`. Parallel materializations were flaky on local DuckLake.
+- `dbt/profiles.yml` sets `threads: 1`. Parallel materializations were flaky on local DuckLake.
 - Python dependencies come from uv (`uv sync`, `uv run`).
 - Feature branches and pull requests, including solo work. `main` stays merge-only.
 - Do not commit `.env`, `lake/`, `*.duckdb`, dbt `target/`, `.dagster_home/`, or `.prefect/`.
